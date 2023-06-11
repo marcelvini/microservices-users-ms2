@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - 3001:3001
+    volumes:
+      - .:/home/node/app
+    depends_on: 
+      - db
+    networks:
+      kafka_rede_kafka:
+
+  db:
+    image: mongo:6-jammy
+    ports:
+      - '27018:27018'
+    volumes:
+      - dbdata6:/data/db
+    networks:
+      kafka_rede_kafka:
+
+volumes:
+  dbdata6:
+
+networks:
+  kafka_rede_kafka:
+    external: true
