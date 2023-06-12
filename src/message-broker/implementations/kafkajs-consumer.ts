@@ -9,6 +9,8 @@ import {
 import * as retry from 'async-retry';
 import { sleep } from '../../utils/sleep';
 import { IConsumer } from '../interfaces/consumer.interface';
+import { FeedbackProducerService } from 'src/feedback/producer/feedback-producer.service';
+import { FeedbackDto } from 'src/feedback/dto/FeedbackDto';
 
 export class KafkajsConsumer implements IConsumer {
   private readonly kafka: Kafka;
@@ -19,6 +21,7 @@ export class KafkajsConsumer implements IConsumer {
     private readonly topic: ConsumerSubscribeTopic,
     config: ConsumerConfig,
     broker: string,
+    private feedbackProducerService: FeedbackProducerService,
   ) {
     this.kafka = new Kafka({ brokers: [broker] });
     this.consumer = this.kafka.consumer(config);
@@ -44,16 +47,17 @@ export class KafkajsConsumer implements IConsumer {
             'Error consuming message. Adding to dead letter queue...',
             err,
           );
-          await this.addMessageToDlq(message);
+          await this.addMessageToDlq(message, this.topic.topic as string);
         }
       },
     });
   }
 
-  private async addMessageToDlq(message: KafkaMessage) {
-    console.log({
-      value: `message added to dlq: ${message.value.toString()}`,
-    });
+  private async addMessageToDlq(message: KafkaMessage, topic: string) {
+    await this.feedbackProducerService.feedback({
+      message: `${message.value.toString()}`,
+      origin: `users-ms2-${topic}`,
+    } as FeedbackDto);
   }
 
   async connect() {

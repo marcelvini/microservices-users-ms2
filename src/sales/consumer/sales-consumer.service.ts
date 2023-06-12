@@ -12,6 +12,7 @@ export class SalesConsumerService implements OnModuleInit {
         console.log({
           value: message.value.toString(),
         });
+        throw new Error('test errror');
       },
     });
   }
