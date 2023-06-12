@@ -14,6 +14,9 @@ class User {
   @Prop({ unique: true, required: true })
   email: string;
 
+  @Prop({ default: '123456' })
+  password: string;
+
   @Prop({ type: MongooseSchema.Types.Array })
   roles: [Role];
 

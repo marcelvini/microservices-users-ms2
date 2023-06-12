@@ -8,6 +8,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { config } from 'dotenv';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 config();
 @Module({
   imports: [
@@ -17,6 +18,7 @@ config();
     FeedbackModule,
     MongooseModule.forRoot(process.env.MONGO),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

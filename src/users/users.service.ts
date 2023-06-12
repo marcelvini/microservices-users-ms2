@@ -20,4 +20,7 @@ export class UsersService {
   async findAll() {
     return this.userRepository.findAll();
   }
+  async findOne(email: string) {
+    return this.userRepository.findOne(email);
+  }
 }

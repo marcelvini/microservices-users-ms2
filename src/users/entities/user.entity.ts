@@ -5,6 +5,7 @@ type Role = {
 class User {
   id: string;
   email: string;
+  password: string;
   roles: Role[];
   createdAt: Date;
   updatedAt: Date;

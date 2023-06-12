@@ -8,4 +8,5 @@ export interface UserRepository {
   createUser(createUserDto: CreateUserDto): Promise<User>;
   addRoles(email: string, role: Role): Promise<User>;
   removeRoles(email: string, role: Role): Promise<User>;
+  findOne(email: string): Promise<User>;
 }

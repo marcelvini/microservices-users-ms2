@@ -9,6 +9,10 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 @Injectable()
 export class UserMongoRepository implements UserRepository {
   constructor(@InjectModel(User.name) private userModel: UserModel) {}
+  async findOne(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ email: email });
+    return user as User;
+  }
 
   async findAll() {
     const users = await this.userModel.find().lean();
@@ -107,6 +111,10 @@ export class UserMongoRepository implements UserRepository {
         email: email,
         roles: [role, { role: 'PREMIUM_USER', expiration: role.expiration }],
       });
+      console.log(JSON.stringify(newUser));
+      console.log(
+        `***this is mock of a mail sent to user: Hello here is your temporary password:${newUser.password} use your email:${newUser.email} and this temporary password to first authentication, be sure change this password as soon as possible`,
+      );
       return this.mapToUser(newUser);
     } else if (!user.roles) {
       (user.roles = [{ role: 'PREMIUM_USER', expiration: role.expiration }] as [
@@ -125,6 +133,7 @@ export class UserMongoRepository implements UserRepository {
     user.id = rawUser.id;
     user.email = rawUser.email;
     user.roles = rawUser.roles;
+    user.password = rawUser.password;
     user.createdAt = rawUser.createdAt || new Date();
     user.updatedAt = rawUser.updatedAt || new Date();
 
