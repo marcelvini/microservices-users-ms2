@@ -47,16 +47,24 @@ export class KafkajsConsumer implements IConsumer {
             'Error consuming message. Adding to dead letter queue...',
             err,
           );
-          await this.addMessageToDlq(message, this.topic.topic as string);
+          await this.addMessageToDlq(
+            message,
+            this.topic.topic as string,
+            err as string,
+          );
         }
       },
     });
   }
 
-  private async addMessageToDlq(message: KafkaMessage, topic: string) {
+  private async addMessageToDlq(
+    message: KafkaMessage,
+    topic: string,
+    err: string,
+  ) {
     await this.feedbackProducerService.feedback({
       message: `${message.value.toString()}`,
-      origin: `users-ms2-${topic}`,
+      origin: { system: 'users-ms2', topic: topic, problem: `${err}` },
     } as FeedbackDto);
   }
 

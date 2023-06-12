@@ -1,5 +1,5 @@
 type FeedbackDto = {
   message: any;
-  origin?: string;
+  origin?: any;
 };
 export { FeedbackDto };
