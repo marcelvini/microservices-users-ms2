@@ -13,11 +13,12 @@ export class AuthService {
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
-    const { password, roles, ...result } = user;
-    const validRoles = roles.map((role) => {
-      if (role.expiration <= new Date()) return role.role;
-    });
-    const payload = { ...result, roles: validRoles };
+
+    const validRoles: string[] = [];
+    for (const role of user.roles) {
+      validRoles.push(role.role);
+    }
+    const payload = { email: user.email, roles: validRoles };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
